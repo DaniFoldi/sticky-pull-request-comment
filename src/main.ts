@@ -10,6 +10,7 @@ import {
   hideClassify,
   hideDetails,
   hideOldComment,
+  insertAtMarker,
   pullRequestNumber,
   recreate,
   repo,
@@ -56,6 +57,10 @@ async function run(): Promise<undefined> {
 
     if (hideOldComment && hideAndRecreate) {
       throw new Error("hide and hide_and_recreate cannot be both set to true")
+    }
+
+    if (append && insertAtMarker) {
+      throw new Error("append and prepend cannot be both set to true")
     }
 
     const octokit = github.getOctokit(githubToken)
@@ -134,7 +139,14 @@ async function run(): Promise<undefined> {
       return
     }
 
-    await updateComment(octokit, previous.id, body, header, previousBody)
+    await updateComment(
+      octokit,
+      previous.id,
+      body,
+      header,
+      previousBody,
+      insertAtMarker
+    )
   } catch (error) {
     if (error instanceof Error) {
       core.setFailed(error.message)

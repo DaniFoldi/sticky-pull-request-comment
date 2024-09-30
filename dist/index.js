@@ -106,13 +106,21 @@ function findPreviousComment(octokit, repo, number, header) {
         return undefined;
     });
 }
-function updateComment(octokit, id, body, header, previousBody) {
+function updateComment(octokit, id, body, header, previousBody, insertAtMarker) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!body && !previousBody)
             return core.warning("Comment body cannot be blank");
         const rawPreviousBody = previousBody
             ? bodyWithoutHeader(previousBody, header)
             : "";
+        const updatedBody = previousBody
+            ? bodyWithHeader(insertAtMarker
+                ? rawPreviousBody
+                    .replace("<!--here-->(.*?)<details>", "<!--here--><details>$1</details><details>")
+                    .replace("> (.*?)", "<summary>$1</summary>")
+                    .replace("<!--here-->", `<!--here-->\n${body}\n`)
+                : `${rawPreviousBody}\n${body}`, header)
+            : bodyWithHeader(body, header);
         yield octokit.graphql(`
     mutation($input: UpdateIssueCommentInput!) {
       updateIssueComment(input: $input) {
@@ -125,9 +133,7 @@ function updateComment(octokit, id, body, header, previousBody) {
     `, {
             input: {
                 id,
-                body: previousBody
-                    ? bodyWithHeader(`${rawPreviousBody}\n${body}`, header)
-                    : bodyWithHeader(body, header)
+                body: updatedBody
             }
         });
     });
@@ -167,7 +173,7 @@ function minimizeComment(octokit, subjectId, classifier) {
 }
 function getBodyOf(previous, append, hideDetails) {
     var _a;
-    if (!append) {
+    if (!append && !hideDetails) {
         return undefined;
     }
     if (!hideDetails) {
@@ -222,7 +228,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 var _a, _b;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ignoreEmpty = exports.githubToken = exports.hideOldComment = exports.skipUnchanged = exports.onlyUpdateComment = exports.onlyCreateComment = exports.deleteOldComment = exports.hideClassify = exports.hideAndRecreate = exports.recreate = exports.hideDetails = exports.append = exports.header = exports.repo = exports.pullRequestNumber = void 0;
+exports.ignoreEmpty = exports.githubToken = exports.hideOldComment = exports.skipUnchanged = exports.onlyUpdateComment = exports.onlyCreateComment = exports.deleteOldComment = exports.hideClassify = exports.hideAndRecreate = exports.recreate = exports.hideDetails = exports.insertAtMarker = exports.append = exports.header = exports.repo = exports.pullRequestNumber = void 0;
 exports.getBody = getBody;
 const core = __importStar(__nccwpck_require__(2186));
 const github_1 = __nccwpck_require__(5438);
@@ -233,6 +239,9 @@ exports.pullRequestNumber = ((_b = (_a = github_1.context === null || github_1.c
 exports.repo = buildRepo();
 exports.header = core.getInput("header", { required: false });
 exports.append = core.getBooleanInput("append", { required: true });
+exports.insertAtMarker = core.getBooleanInput("insert_at_marker", {
+    required: true
+});
 exports.hideDetails = core.getBooleanInput("hide_details", {
     required: true
 });
@@ -362,6 +371,9 @@ function run() {
             if (config_1.hideOldComment && config_1.hideAndRecreate) {
                 throw new Error("hide and hide_and_recreate cannot be both set to true");
             }
+            if (config_1.append && config_1.insertAtMarker) {
+                throw new Error("append and prepend cannot be both set to true");
+            }
             const octokit = github.getOctokit(config_1.githubToken);
             const previous = yield (0, comment_1.findPreviousComment)(octokit, config_1.repo, config_1.pullRequestNumber, config_1.header);
             core.setOutput("previous_comment_id", previous === null || previous === void 0 ? void 0 : previous.id);
@@ -405,7 +417,7 @@ function run() {
                 core.setOutput("created_comment_id", created === null || created === void 0 ? void 0 : created.data.id);
                 return;
             }
-            yield (0, comment_1.updateComment)(octokit, previous.id, body, config_1.header, previousBody);
+            yield (0, comment_1.updateComment)(octokit, previous.id, body, config_1.header, previousBody, config_1.insertAtMarker);
         }
         catch (error) {
             if (error instanceof Error) {

@@ -2,6 +2,7 @@ beforeEach(() => {
   process.env["GITHUB_REPOSITORY"] = "marocchino/stick-pull-request-comment"
   process.env["INPUT_NUMBER"] = "123"
   process.env["INPUT_APPEND"] = "false"
+  process.env["INPUT_INSERT_AT_MARKER"] = "false"
   process.env["INPUT_RECREATE"] = "false"
   process.env["INPUT_DELETE"] = "false"
   process.env["INPUT_ONLY_CREATE"] = "false"
@@ -25,6 +26,7 @@ afterEach(() => {
   delete process.env["INPUT_MESSAGE"]
   delete process.env["INPUT_NUMBER"]
   delete process.env["INPUT_APPEND"]
+  delete process.env["INPUT_INSERT_AT_MARKER"]
   delete process.env["INPUT_RECREATE"]
   delete process.env["INPUT_DELETE"]
   delete process.env["INPUT_ONLY_CREATE"]
@@ -48,6 +50,7 @@ test("repo", async () => {
     repo: {owner: "jin", repo: "other"},
     header: "",
     append: false,
+    insertAtMarker: false,
     recreate: false,
     deleteOldComment: false,
     hideOldComment: false,
@@ -67,6 +70,7 @@ test("header", async () => {
     repo: {owner: "marocchino", repo: "stick-pull-request-comment"},
     header: "header",
     append: false,
+    insertAtMarker: false,
     recreate: false,
     deleteOldComment: false,
     hideOldComment: false,
@@ -86,6 +90,7 @@ test("append", async () => {
     repo: {owner: "marocchino", repo: "stick-pull-request-comment"},
     header: "",
     append: true,
+    insertAtMarker: false,
     recreate: false,
     deleteOldComment: false,
     hideOldComment: false,
@@ -105,6 +110,7 @@ test("recreate", async () => {
     repo: {owner: "marocchino", repo: "stick-pull-request-comment"},
     header: "",
     append: false,
+    insertAtMarker: false,
     recreate: true,
     deleteOldComment: false,
     hideOldComment: false,
@@ -124,6 +130,7 @@ test("delete", async () => {
     repo: {owner: "marocchino", repo: "stick-pull-request-comment"},
     header: "",
     append: false,
+    insertAtMarker: false,
     recreate: false,
     deleteOldComment: true,
     hideOldComment: false,
@@ -143,6 +150,7 @@ test("hideOldComment", async () => {
     repo: {owner: "marocchino", repo: "stick-pull-request-comment"},
     header: "",
     append: false,
+    insertAtMarker: false,
     recreate: false,
     deleteOldComment: false,
     hideOldComment: true,
@@ -162,6 +170,7 @@ test("hideAndRecreate", async () => {
     repo: {owner: "marocchino", repo: "stick-pull-request-comment"},
     header: "",
     append: false,
+    insertAtMarker: false,
     recreate: false,
     deleteOldComment: false,
     hideOldComment: false,
@@ -181,6 +190,7 @@ test("hideClassify", async () => {
     repo: {owner: "marocchino", repo: "stick-pull-request-comment"},
     header: "",
     append: false,
+    insertAtMarker: false,
     recreate: false,
     deleteOldComment: false,
     hideOldComment: false,
@@ -200,6 +210,7 @@ test("hideDetails", async () => {
     repo: {owner: "marocchino", repo: "stick-pull-request-comment"},
     header: "",
     append: false,
+    insertAtMarker: false,
     recreate: false,
     deleteOldComment: false,
     hideOldComment: false,
@@ -220,6 +231,7 @@ describe("path", () => {
       repo: {owner: "marocchino", repo: "stick-pull-request-comment"},
       header: "",
       append: false,
+      insertAtMarker: false,
       recreate: false,
       deleteOldComment: false,
       hideOldComment: false,
@@ -240,6 +252,7 @@ describe("path", () => {
       repo: {owner: "marocchino", repo: "stick-pull-request-comment"},
       header: "",
       append: false,
+      insertAtMarker: false,
       recreate: false,
       deleteOldComment: false,
       hideOldComment: false,
@@ -262,6 +275,7 @@ describe("path", () => {
       repo: {owner: "marocchino", repo: "stick-pull-request-comment"},
       header: "",
       append: false,
+      insertAtMarker: false,
       recreate: false,
       deleteOldComment: false,
       hideOldComment: false,
@@ -283,6 +297,7 @@ test("message", async () => {
     repo: {owner: "marocchino", repo: "stick-pull-request-comment"},
     header: "",
     append: false,
+    insertAtMarker: false,
     recreate: false,
     deleteOldComment: false,
     hideOldComment: false,
@@ -303,6 +318,7 @@ test("ignore_empty", async () => {
     repo: {owner: "marocchino", repo: "stick-pull-request-comment"},
     header: "",
     append: false,
+    insertAtMarker: false,
     recreate: false,
     deleteOldComment: false,
     hideOldComment: false,
@@ -323,6 +339,7 @@ test("skip_unchanged", async () => {
     repo: {owner: "marocchino", repo: "stick-pull-request-comment"},
     header: "",
     append: false,
+    insertAtMarker: false,
     recreate: false,
     deleteOldComment: false,
     hideOldComment: false,

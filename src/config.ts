@@ -11,6 +11,9 @@ export const pullRequestNumber =
 export const repo = buildRepo()
 export const header = core.getInput("header", {required: false})
 export const append = core.getBooleanInput("append", {required: true})
+export const insertAtMarker = core.getBooleanInput("insert_at_marker", {
+  required: true
+})
 export const hideDetails = core.getBooleanInput("hide_details", {
   required: true
 })
