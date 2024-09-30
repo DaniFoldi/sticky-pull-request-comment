@@ -116,8 +116,8 @@ function updateComment(octokit, id, body, header, previousBody, insertAtMarker) 
         const updatedBody = previousBody
             ? bodyWithHeader(insertAtMarker
                 ? rawPreviousBody
-                    .replace("<!--here-->(.*?)<details>", "<!--here--><details>$1</details><details>")
-                    .replace("> (.*?)", "<summary>$1</summary>")
+                    .replace(/<!--here-->(.*?)<details>/, "<!--here--><details>$1</details><details>")
+                    .replace(/^> (.*?)/, "<summary>$1</summary>")
                     .replace("<!--here-->", `<!--here-->\n${body}\n`)
                 : `${rawPreviousBody}\n${body}`, header)
             : bodyWithHeader(body, header);
