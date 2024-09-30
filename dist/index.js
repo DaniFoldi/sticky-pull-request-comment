@@ -117,7 +117,7 @@ function updateComment(octokit, id, body, header, previousBody, insertAtMarker) 
             ? bodyWithHeader(insertAtMarker
                 ? rawPreviousBody
                     .replace(/<!--here-->(.*?)<details>/, "<!--here--><details>$1</details><details>")
-                    .replace(/^> (.*?)/, "<summary>$1</summary>")
+                    .replace(/^> (.*?)$/gm, "<summary>$1</summary>")
                     .replace("<!--here-->", `<!--here-->\n${body}\n`)
                 : `${rawPreviousBody}\n${body}`, header)
             : bodyWithHeader(body, header);
@@ -173,7 +173,7 @@ function minimizeComment(octokit, subjectId, classifier) {
 }
 function getBodyOf(previous, append, hideDetails) {
     var _a;
-    if (!append && !hideDetails) {
+    if (!append) {
         return undefined;
     }
     if (!hideDetails) {
@@ -404,7 +404,7 @@ function run() {
                 // don't recreate or update if the message is unchanged
                 return;
             }
-            const previousBody = (0, comment_1.getBodyOf)(previous, config_1.append, config_1.hideDetails);
+            const previousBody = (0, comment_1.getBodyOf)(previous, config_1.append || config_1.insertAtMarker, config_1.hideDetails);
             if (config_1.recreate) {
                 yield (0, comment_1.deleteComment)(octokit, previous.id);
                 const created = yield (0, comment_1.createComment)(octokit, config_1.repo, config_1.pullRequestNumber, body, config_1.header, previousBody);

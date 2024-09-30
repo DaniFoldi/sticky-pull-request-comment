@@ -105,7 +105,7 @@ export async function updateComment(
                 /<!--here-->(.*?)<details>/,
                 "<!--here--><details>$1</details><details>"
               )
-              .replace(/^> (.*?)/, "<summary>$1</summary>")
+              .replace(/^> (.*?)$/gm, "<summary>$1</summary>")
               .replace("<!--here-->", `<!--here-->\n${body}\n`)
           : `${rawPreviousBody}\n${body}`,
         header
@@ -192,7 +192,7 @@ export function getBodyOf(
   append: boolean,
   hideDetails: boolean
 ): string | undefined {
-  if (!append && !hideDetails) {
+  if (!append) {
     return undefined
   }
 

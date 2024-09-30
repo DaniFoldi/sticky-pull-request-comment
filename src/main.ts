@@ -111,7 +111,11 @@ async function run(): Promise<undefined> {
       return
     }
 
-    const previousBody = getBodyOf(previous, append, hideDetails)
+    const previousBody = getBodyOf(
+      previous,
+      append || insertAtMarker,
+      hideDetails
+    )
     if (recreate) {
       await deleteComment(octokit, previous.id)
       const created = await createComment(
