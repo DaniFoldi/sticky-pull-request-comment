@@ -100,13 +100,7 @@ export async function updateComment(
   const updatedBody = previousBody
     ? bodyWithHeader(
         insertAtMarker
-          ? rawPreviousBody
-              .replace(
-                /<!--here-->(.*?)<details>/,
-                "<!--here--><details>$1</details><details>"
-              )
-              .replace(/^> (.*?)$/gm, "<summary>$1</summary>")
-              .replace("<!--here-->", `<!--here-->\n${body}\n`)
+          ? rawPreviousBody.replace("<!--marker-->", `<!--marker-->\n${body}\n`)
           : `${rawPreviousBody}\n${body}`,
         header
       )
