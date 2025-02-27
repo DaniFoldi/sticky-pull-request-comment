@@ -87,7 +87,8 @@ export async function updateComment(
   id: string,
   body: string,
   header: string,
-  previousBody?: string
+  previousBody?: string,
+  insertAtMarker?: boolean
 ): Promise<void> {
   if (!body && !previousBody)
     return core.warning("Comment body cannot be blank")
@@ -95,6 +96,15 @@ export async function updateComment(
   const rawPreviousBody: String = previousBody
     ? bodyWithoutHeader(previousBody, header)
     : ""
+
+  const updatedBody = previousBody
+    ? bodyWithHeader(
+        insertAtMarker
+          ? rawPreviousBody.replace("<!--marker-->", `<!--marker-->\n${body}\n`)
+          : `${rawPreviousBody}\n${body}`,
+        header
+      )
+    : bodyWithHeader(body, header)
 
   await octokit.graphql(
     `
@@ -110,9 +120,7 @@ export async function updateComment(
     {
       input: {
         id,
-        body: previousBody
-          ? bodyWithHeader(`${rawPreviousBody}\n${body}`, header)
-          : bodyWithHeader(body, header)
+        body: updatedBody
       }
     }
   )

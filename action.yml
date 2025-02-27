@@ -19,6 +19,10 @@ inputs:
     description: "Indicate if new comment messages should be appended to previous comment message. Only `true` is allowed. Just skip this item when you don't need it."
     default: "false"
     required: false
+  insert_at_marker:
+    description: "Insert new comment messages at the marker in the previous comment message. Just skip this item when you don't need it."
+    default: "false"
+    required: false
   recreate:
     description: "Indicate if previous comment should be removed before creating a new comment. Only `true` is allowed. Just skip this item when you don't need it."
     default: "false"
