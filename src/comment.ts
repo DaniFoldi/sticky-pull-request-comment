@@ -103,6 +103,9 @@ export async function updateComment(
           ? rawPreviousBody.replace("<!--marker-->", `<!--marker-->\n${body}\n`)
           : `${rawPreviousBody}\n${body}`,
         header
+      ).replaceAll(
+        /(\?|&)cache=false&id=(\d+)/g,
+        (match, p1, p2) => `${p1}cache=false&id=${Number.parseInt(p2) + 1}`
       )
     : bodyWithHeader(body, header)
 
